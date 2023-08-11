@@ -1,0 +1,29 @@
+{
+  "name": "whatsapp-dolar-contact",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marianocorvatta/whatsapp-dolar-contact.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marianocorvatta/whatsapp-dolar-contact/issues"
+  },
+  "homepage": "https://github.com/marianocorvatta/whatsapp-dolar-contact#readme",
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.22.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
