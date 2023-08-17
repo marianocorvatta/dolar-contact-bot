@@ -1,14 +1,14 @@
-const { Client } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+const express = require("express");
 
-const client = new Client();
+require("dotenv").config();
 
-client.on('qr', (qr) => {
-    qrcode.generate(qr, {small: true});
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("Hello dolar-contact !");
 });
 
-client.on('ready', () => {
-    console.log('Client is ready!');
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
-
-client.initialize();
