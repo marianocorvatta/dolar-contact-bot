@@ -6,7 +6,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-const { sendMessage, getTemplatedMessageInput } = require("./messageHelper.js");
+const { sendMessage, getTextMessageInput } = require("./sendmessage.js");
 
 app.get("/", (req, res) => {
   res.send("Hello dolar-contact !");
@@ -39,19 +39,20 @@ app.post("/webhooks", (req, res) => {
       .join("\n\n"),
   };
 
-  const data = getTemplatedMessageInput(process.env.RECIPIENT_WAID);
+  var data = getTextMessageInput(process.env.RECIPIENT_WAID, 'Welcome to the Movie Ticket Demo App for Node.js!');
   
   sendMessage(data)
     .then(function (response) {
-      res.redirect('/catalog');
+      res.sendStatus(200);
       return;
     })
     .catch(function (error) {
       console.log(error);
+      console.log(error.response.data);
+      res.sendStatus(500);
       return;
     });
 
-  console.log("reviewInfo", review);
   res.sendStatus(200);
 });
 
