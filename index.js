@@ -1,9 +1,12 @@
+
 const express = require("express");
 
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+const { sendMessage, getTemplatedMessageInput } = require("./messageHelper.js");
 
 app.get("/", (req, res) => {
   res.send("Hello dolar-contact !");
@@ -35,6 +38,18 @@ app.post("/webhooks", (req, res) => {
       .map((message) => message.text.body)
       .join("\n\n"),
   };
+
+  const data = getTemplatedMessageInput(process.env.RECIPIENT_WAID);
+  
+  sendMessage(data)
+    .then(function (response) {
+      res.redirect('/catalog');
+      return;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return;
+    });
 
   console.log("reviewInfo", review);
   res.sendStatus(200);
