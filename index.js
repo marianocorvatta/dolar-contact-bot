@@ -9,6 +9,20 @@ app.get("/", (req, res) => {
   res.send("Hello dolar-contact !");
 });
 
+const token = process.env.TOKEN;
+
+app.get("/webhooks", (req, res) => {
+  console.log("verify_token", req.query["hub.verify_token"]);
+  if (
+    req.query["hub.mode"] == "subscribe" &&
+    req.query["hub.verify_token"] == token
+  ) {
+    res.send(req.query["hub.challenge"]);
+  } else {
+    res.sendStatus(400);
+  }
+});
+
 app.post("/webhooks", (req, res) => {
   const body = JSON.parse(req.body);
   if (body.field !== "messages") {
