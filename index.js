@@ -24,7 +24,7 @@ app.get("/test", async (req, res) => {
   }
 });
 
-app.get("/webhooks", (req, res) => {
+app.get("/webhooks", async (req, res) => {
   console.log("verify_token", req.query["hub.verify_token"]);
   if (
     req.query["hub.mode"] == "subscribe" &&
@@ -36,7 +36,7 @@ app.get("/webhooks", (req, res) => {
   }
 });
 
-app.post("/webhooks", async (req, res) => {
+app.post("/webhook", async (req, res) => {
   const body = JSON.parse(req.body);
   // if (body.field !== "messages") {
   //   // not from the messages webhook so dont process
