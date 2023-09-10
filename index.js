@@ -21,7 +21,7 @@ bot.onText(/\/dolar (.+)/, async (msg, match) => {
   const amount = +match[1];
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getDolarBlue()
-  const response = `USD $ ${(amount / data.venta).toFixed(2)}`
+  const response = (amount / data.venta).toLocaleString('es-AR', { style:"currency", currency:"USD", maximumFractionDigits: 2 })
   // send back the amount in USD
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
@@ -34,7 +34,7 @@ bot.onText(/\/dolarpeso (.+)/, async (msg, match) => {
   const amount = +match[1];
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getDolarBlue()
-  const response = `ARS $ ${(amount * data.compra).toFixed(2) }` 
+  const response = (amount * data.compra).toLocaleString('es-AR', { style:"currency", currency:"ARS", maximumFractionDigits: 2 }) 
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
@@ -47,7 +47,7 @@ bot.onText(/\/euro (.+)/, async (msg, match) => {
   const amount = +match[1];
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getEuroBlue()
-  const response =`€ ${(amount / data.venta).toFixed(2)}` 
+  const response = (amount / data.venta).toLocaleString('es-AR', { style:"currency", currency:"EUR", maximumFractionDigits: 2 })
   // send back the amount in EUR
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
@@ -60,7 +60,7 @@ bot.onText(/\/europeso (.+)/, async (msg, match) => {
   const amount = match[1];
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getEuroBlue()
-  const response = `ARS $ ${(amount * data.compra).toFixed(2)}`
+  const response = (amount * data.compra).toLocaleString('es-AR', { style:"currency", currency:"ARS", maximumFractionDigits: 2 })
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
