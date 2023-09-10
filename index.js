@@ -16,45 +16,39 @@ const bot = new TelegramBot(token, {polling: true});
 
 // Peso to Dolar
 // Matches "/dolar [number]"
-bot.onText(/\/dolar (.+) /, (msg, match) => {
-
-  // ToDo: see why is not working
-  // const chatId = msg.chat.id;
-  // const resp = match[1];
-  // console.log('amount', amount)
-  // bot.sendMessage(chatId, 'Procesando...');
-  // const data = getDolarBlue()
-  // // const response = (amount / +data.venta).toFixed(2)  
-  // // send back the amount in USD
-  // bot.sendMessage(chatId, resp);
-
+bot.onText(/\/dolar (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-  const resp = match[1];
-  bot.sendMessage(chatId, 'Procesando...');
+  const amount = +match[1];
 
-  // send back the amount in ARS
-  bot.sendMessage(chatId, resp);
+  bot.sendMessage(chatId, 'Procesando...');
+  const data = await getDolarBlue()
+  const response = (amount / +data.venta).toFixed(2)  
+  // send back the amount in USD
+  bot.sendMessage(chatId, response);
 });
 
 // Dolar to Peso
 // Matches "/dolarpeso [number]"
-bot.onText(/\/dolarpeso (.+)/, (msg, match) => {
+bot.onText(/\/dolarpeso (.+)/, async (msg, match) => {
 
   const chatId = msg.chat.id;
-  const resp = match[1];
+  const amount = +match[1];
   bot.sendMessage(chatId, 'Procesando...');
+  const data = await getDolarBlue()
+  const response = (amount * +data.venta).toFixed(2)  
 
   // send back the amount in ARS
-  bot.sendMessage(chatId, resp);
+  bot.sendMessage(chatId, response);
 });
 
 // Peso to Euro
 // Matches "/euro [number]"
-bot.onText(/\/euro (.+)/, (msg, match) => {
+bot.onText(/\/euro (.+)/, async (msg, match) => {
 
   const chatId = msg.chat.id;
   const resp = match[1];
   bot.sendMessage(chatId, 'Procesando...');
+  const data = await getEuroBlue()
 
   // send back the amount in EUR
   bot.sendMessage(chatId, resp);
@@ -81,7 +75,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Dolar contact bot listening on port ${port}`);
 });
 
 /**
@@ -91,13 +85,33 @@ app.listen(port, () => {
 async function getDolarBlue() {
   try {
       const data = await getInfoDolar();
-      const valores = {
+      const values = {
           fecha: getDateTime(),
           compra: formatNumber(data.cotiza.Dolar.casa380.compra._text),
           venta: formatNumber(data.cotiza.Dolar.casa380.venta._text)
       };
 
-      console.log('getDolarBlue', valores)
+      return values;
+  } catch (e) {
+      console.log(e);
+  }
+}
+
+/**
+ * @description Obtener el valor del euro blue
+ * @returns Un objeto con el valor de compra, el de venta y la fecha y hora de la consulta
+ */
+async function getEuroBlue() {
+  try {
+      // const data = await getInfoDolar();
+      // console.log('euro', data.cotiza.Euro)
+      // const values = {
+      //     fecha: getDateTime(),
+      //     compra: formatNumber(data.cotiza.Dolar.casa380.compra._text),
+      //     venta: formatNumber(data.cotiza.Dolar.casa380.venta._text)
+      // };
+
+      // return values;
   } catch (e) {
       console.log(e);
   }
