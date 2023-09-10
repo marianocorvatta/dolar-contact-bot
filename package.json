@@ -1,8 +1,9 @@
 {
-  "name": "whatsapp-dolar-contact",
+  "name": "dolar-contact-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple Telegram bot to convert currency and send it to a contact",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
@@ -10,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marianocorvatta/whatsapp-dolar-contact.git"
+    "url": "git+https://github.com/marianocorvatta/dolar-contact-bot.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/marianocorvatta/whatsapp-dolar-contact/issues"
+    "url": "https://github.com/marianocorvatta/dolar-contact-bot/issues"
   },
-  "homepage": "https://github.com/marianocorvatta/whatsapp-dolar-contact#readme",
+  "homepage": "https://github.com/marianocorvatta/dolar-contact-bot#readme",
   "dependencies": {
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
