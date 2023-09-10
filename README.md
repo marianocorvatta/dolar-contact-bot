@@ -26,7 +26,7 @@ To run this bot, you need to have Node.js installed on your machine. Additionall
 
    ```shell
    cd dolar-contact-bot
-  ```
+   ```
 3. Install the dependencies:
 
    ```shell
