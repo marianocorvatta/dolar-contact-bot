@@ -1,7 +1,7 @@
 
 const express = require("express");
-const convert = require('xml-js');
 const axios = require('axios');
+const cheerio = require('cheerio');
 
 require("dotenv").config();
 
@@ -19,50 +19,51 @@ const bot = new TelegramBot(token, {polling: true});
 bot.onText(/\/dolar (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   const amount = +match[1];
-
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getDolarBlue()
-  const response = (amount / +data.venta).toFixed(2)  
+  const response = `USD $ ${(amount / data.venta).toFixed(2)}`
   // send back the amount in USD
   bot.sendMessage(chatId, response);
+  bot.sendMessage(chatId, `Fecha: ${data.date}`);
 });
 
-// Dolar to Peso
+// Dolar to ARS
 // Matches "/dolarpeso [number]"
 bot.onText(/\/dolarpeso (.+)/, async (msg, match) => {
-
   const chatId = msg.chat.id;
   const amount = +match[1];
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getDolarBlue()
-  const response = (amount * +data.venta).toFixed(2)  
-
+  const response = `ARS $ ${(amount * data.compra).toFixed(2) }` 
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
+  bot.sendMessage(chatId, `Fecha: ${data.date}`);
 });
 
-// Peso to Euro
+// ARS to Euro
 // Matches "/euro [number]"
 bot.onText(/\/euro (.+)/, async (msg, match) => {
-
   const chatId = msg.chat.id;
-  const resp = match[1];
+  const amount = +match[1];
   bot.sendMessage(chatId, 'Procesando...');
   const data = await getEuroBlue()
-
+  const response =`€ ${(amount / data.venta).toFixed(2)}` 
   // send back the amount in EUR
-  bot.sendMessage(chatId, resp);
+  bot.sendMessage(chatId, response);
+  bot.sendMessage(chatId, `Fecha: ${data.date}`);
 });
 
 // Euro to Peso
 // Matches "/europeso [number]"
-bot.onText(/\/europeso (.+)/, (msg, match) => {
+bot.onText(/\/europeso (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-  const resp = match[1];
+  const amount = match[1];
   bot.sendMessage(chatId, 'Procesando...');
-
-  // send back the amount in EUR
-  bot.sendMessage(chatId, resp);
+  const data = await getEuroBlue()
+  const response = `ARS $ ${(amount * data.compra).toFixed(2)}`
+  // send back the amount in ARS
+  bot.sendMessage(chatId, response);
+  bot.sendMessage(chatId, `Fecha: ${data.date}`);
 });
 
 // bot.onText(/^(?!\/europeso$|\/euro$|\/dolar$|\/dolarpeso$).*/, (msg) => {
@@ -83,54 +84,73 @@ app.listen(port, () => {
  * @returns Un objeto con el valor de compra, el de venta y la fecha y hora de la consulta
  */
 async function getDolarBlue() {
-  try {
-      const data = await getInfoDolar();
-      const values = {
-          fecha: getDateTime(),
-          compra: formatNumber(data.cotiza.Dolar.casa380.compra._text),
-          venta: formatNumber(data.cotiza.Dolar.casa380.venta._text)
-      };
+  const url = 'https://dolarhoy.com/i/cotizaciones/dolar-blue';
+
+  return axios.get(url)
+  .then((response) => {
+    if (response.status === 200) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+
+      const values = {}
+      
+      $('div.data__valores p').each((index, element) => {
+        const valor = parseFloat($(element).text());
+        const tipo = $(element).find('span').text();
+      
+        if (tipo === 'Compra') {
+          values.compra = valor;
+        } else if (tipo === 'Venta') {
+          values.venta = valor;
+        }
+      });     
+
+      values.date = getDateTime();
 
       return values;
-  } catch (e) {
-      console.log(e);
-  }
+    }
+  })
+  .catch((error) => {
+    console.error('Error al hacer la solicitud HTTP:', error);
+  });
 }
 
 /**
  * @description Obtener el valor del euro blue
- * @returns Un objeto con el valor de compra, el de venta y la fecha y hora de la consulta
+ * @returns Un objeto con el valor de compra, el de venta
  */
-async function getEuroBlue() {
-  try {
-      // const data = await getInfoDolar();
-      // console.log('euro', data.cotiza.Euro)
-      // const values = {
-      //     fecha: getDateTime(),
-      //     compra: formatNumber(data.cotiza.Dolar.casa380.compra._text),
-      //     venta: formatNumber(data.cotiza.Dolar.casa380.venta._text)
-      // };
+function getEuroBlue() {
+  const url = 'https://dolarhoy.com/cotizacion-euro';
 
-      // return values;
-  } catch (e) {
-      console.log(e);
-  }
-}
+  return axios.get(url)
+    .then((response) => {
+      if (response.status === 200) {
+        const html = response.data;
+        const $ = cheerio.load(html);
 
-/**
- * @description Obtener un json parseado con los valores de dolarSi
- */
-async function getInfoDolar() {
-  try {
-      const dataDolar = await axios.get("https://www.dolarsi.com/api/dolarSiInfo.xml");
-      const json = convert.xml2json(dataDolar.data, { compact: true, spaces: 4 });
-      const jsonParsed = JSON.parse(json);
+        const values = {}
+        
+        // element that contains the data we want to scrape
+        const elementsInsideDiv = $('div.tile.is-parent.is-8 *');
+  
+        elementsInsideDiv.each((_, element) => {
+          const text = $(element).text().trim();
 
-      return jsonParsed;
-  } catch (e) {
-      console.log(e);
-      return null;
-  }
+          if (text.includes('Compra')) {
+            values.compra = parseFloat($(element).next('.value').text().trim().replace('$', ''));
+          } else if (text.includes('Venta')) {
+            values.venta = parseFloat($(element).next('.value').text().trim().replace('$', ''));
+          }
+        });
+
+        values.date = getDateTime();
+
+        return values;
+      }
+    })
+    .catch((error) => {
+      console.error('Error al hacer la solicitud HTTP:', error);
+    });
 }
 
 /**
@@ -147,43 +167,4 @@ function getDateTime() {
   const second = String(now.getSeconds()).padStart(2, '0');
 
   return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
-}
-
-/**
- * Formatea un texto numérico a formato moneda.
- * @param {string} value Texto que contiene el valor numérico a convertir.
- * @param {number} decimalPlaces Cantidad de caracteres decimales a conservar.
- * @returns {string} Valor formateado como moneda.
- */
-function formatNumber(value, decimalPlaces) {
-  const decimals = decimalPlaces || 2;
-  const convertedValue = parseFloat(value.replace('.', '').replace(',', '.'));
-  return !isNaN(convertedValue) ? convertedValue.toFixed(decimals) : 'No cotiza';
-}
-
-/**
- * Devuelve un objeto que contiene los valores de la cotización anual por mes.
- * @param {object} evolucionAnual Objeto que contiene el valor de cada mes del año.
- * @returns {object} Objeto con la fecha actual y un arreglo de meses.
- */
-function getEvolucion(evolucionAnual) {
-  const now = new Date();
-  const mesActual = now.getMonth() + 1;
-
-  let meses = [];
-  for (let i = 1; i <= Object.keys(evolucionAnual).length; i++) {
-      meses.push({
-          "anio": (i < mesActual ? now.getFullYear() : now.getFullYear() - 1).toString(),
-          "mes": i.toString(),
-          "valor": formatNumber(evolucionAnual[[Object.keys(evolucionAnual)[i - 1]]]._text).toString()
-      });
-  }
-  meses = meses.sort((a, b) => a.anio - b.anio);
-
-  const valores = {
-      fecha: getDateTime(),
-      meses
-  };
-
-  return valores;
 }
