@@ -81,7 +81,7 @@ app.listen(port, () => {
 
 /**
  * @description Obtener el valor del dolar blue
- * @returns Un objeto con el valor de compra, el de venta y la fecha y hora de la consulta
+ * @returns Un objeto con el valor de compra, el de venta
  */
 async function getDolarBlue() {
   const url = 'https://dolarhoy.com/i/cotizaciones/dolar-blue';
