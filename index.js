@@ -22,10 +22,7 @@ bot.onText(/\/dolar (.+)/, async (msg, match) => {
   const response = (amount / data.venta).toLocaleString('es-AR', { style:"currency", currency:"USD", maximumFractionDigits: 2 })
   // send back the amount in USD
   bot.sendMessage(chatId, response);
-  sendMessage(chatId, data);
-  // bot.sendMessage(chatId, `Fecha: ${data.date}`);
-  // bot.sendMessage(chatId, `Compra: ${data.compra}`);
-  // bot.sendMessage(chatId, `Venta: ${data.venta}`);
+  sendResponseOrdered(chatId, data, 'US$');
 });
 
 // Dolar to ARS
@@ -38,9 +35,7 @@ bot.onText(/\/dolarpeso (.+)/, async (msg, match) => {
   const response = (amount * data.compra).toLocaleString('es-AR', { style:"currency", currency:"ARS", maximumFractionDigits: 2 }) 
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
-  bot.sendMessage(chatId, `Fecha: ${data.date}`);
-  bot.sendMessage(chatId, `Compra: ${data.compra}`);
-  bot.sendMessage(chatId, `Venta: ${data.venta}`);
+  sendResponseOrdered(chatId, data, 'US$');
 });
 
 // ARS to Euro
@@ -53,9 +48,7 @@ bot.onText(/\/euro (.+)/, async (msg, match) => {
   const response = (amount / data.venta).toLocaleString('es-AR', { style:"currency", currency:"EUR", maximumFractionDigits: 2 })
   // send back the amount in EUR
   bot.sendMessage(chatId, response);
-  bot.sendMessage(chatId, `Fecha: ${data.date}`);
-  bot.sendMessage(chatId, `Compra: ${data.compra}`);
-  bot.sendMessage(chatId, `Venta: ${data.venta}`);
+  sendResponseOrdered(chatId, data, '€');
 });
 
 // Euro to Peso
@@ -68,10 +61,18 @@ bot.onText(/\/europeso (.+)/, async (msg, match) => {
   const response = (amount * data.compra).toLocaleString('es-AR', { style:"currency", currency:"ARS", maximumFractionDigits: 2 })
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
-  bot.sendMessage(chatId, `Fecha: ${data.date}`);
-  bot.sendMessage(chatId, `Compra: ${data.compra}`);
-  bot.sendMessage(chatId, `Venta: ${data.venta}`);
+  sendResponseOrdered(chatId, data, '€');
 });
+
+async function sendResponseOrdered(chatId, data, currency) {
+  try {
+    await bot.sendMessage(chatId, `Fecha: ${data.date}`);
+    await bot.sendMessage(chatId, `Compra: ${currency} ${data.compra}`);
+    await bot.sendMessage(chatId, `Venta: ${currency} ${data.venta}`);
+  } catch (error) {
+    console.error('Error al enviar mensajes:', error);
+  }
+}
 
 app.get("/", (req, res) => {
   res.send("Hello dolar-contact-bot !");
@@ -80,14 +81,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Dolar contact bot listening on port ${port}`);
 });
-
-
-async function sendMessage(chatId, data) {
-  try {
-    await bot.sendMessage(chatId, `Fecha: ${data.date}`);
-    await bot.sendMessage(chatId, `Compra: ${data.compra}`);
-    await bot.sendMessage(chatId, `Venta: ${data.venta}`);
-  } catch (error) {
-    console.error('Error al enviar mensajes:', error);
-  }
-}
