@@ -1,6 +1,6 @@
 # Dolar Contact Bot
 
-This is a Telegram bot developed in Node.js that provides information about currency exchange rates, including the US dollar and euro in Argentina.
+This is a Telegram bot developed in Node.js that provides information about currency exchange rates, including the US dollar and euro in Argentina. (Not official exchange rates)
 
 ## Features
 
@@ -34,9 +34,9 @@ To run this bot, you need to have Node.js installed on your machine. Additionall
    ```
 4. Create a `.env` file and add your Telegram API key:
 
-   ```shell
+   ```
     TELEGRAM_API_KEY=your_telegram_api_key
-    ```
+   ```
 5. Run the application:
 
    ```shell
@@ -46,6 +46,8 @@ To run this bot, you need to have Node.js installed on your machine. Additionall
 ## Usage
 
 Once the bot is up and running, you can interact with it on Telegram by sending commands like "/dollar", "/dolarpeso", "/euro", and "/europeso," followed by the amount you want to convert.
+
+![Bot preview.](/preview.png "This is a sample image.")
 
 ## Example
 
