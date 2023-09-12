@@ -47,15 +47,15 @@ To run this bot, you need to have Node.js installed on your machine. Additionall
 
 Once the bot is up and running, you can interact with it on Telegram by sending commands like "/dollar", "/dolarpeso", "/euro", and "/europeso," followed by the amount you want to convert.
 
-<img src="example.png" alt="bot sample" width="360" style="margin: 0 auto;" />
-
 ## Example
 
 To convert 1000 Argentine pesos to US dollars, you can send the command:
 
- ```shell
+ ```
  /dollar 1000
  ```
 
 The bot will respond with the equivalent amount in US dollars and the current date.
+
+<img src="example.png" alt="bot sample" width="360" style="margin: 0 auto;" />
 
