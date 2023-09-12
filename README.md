@@ -47,7 +47,7 @@ To run this bot, you need to have Node.js installed on your machine. Additionall
 
 Once the bot is up and running, you can interact with it on Telegram by sending commands like "/dollar", "/dolarpeso", "/euro", and "/europeso," followed by the amount you want to convert.
 
-![Bot preview.](/preview.png "This is a sample image.")
+<img src="preview.png" alt="drawing" width="360"/>
 
 ## Example
 
