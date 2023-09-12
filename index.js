@@ -23,6 +23,8 @@ bot.onText(/\/dolar (.+)/, async (msg, match) => {
   // send back the amount in USD
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
+  bot.sendMessage(chatId, `Compra: ${data.compra}`);
+  bot.sendMessage(chatId, `Venta: ${data.venta}`);
 });
 
 // Dolar to ARS
@@ -36,6 +38,8 @@ bot.onText(/\/dolarpeso (.+)/, async (msg, match) => {
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
+  bot.sendMessage(chatId, `Compra: ${data.compra}`);
+  bot.sendMessage(chatId, `Venta: ${data.venta}`);
 });
 
 // ARS to Euro
@@ -49,6 +53,8 @@ bot.onText(/\/euro (.+)/, async (msg, match) => {
   // send back the amount in EUR
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
+  bot.sendMessage(chatId, `Compra: ${data.compra}`);
+  bot.sendMessage(chatId, `Venta: ${data.venta}`);
 });
 
 // Euro to Peso
@@ -62,6 +68,8 @@ bot.onText(/\/europeso (.+)/, async (msg, match) => {
   // send back the amount in ARS
   bot.sendMessage(chatId, response);
   bot.sendMessage(chatId, `Fecha: ${data.date}`);
+  bot.sendMessage(chatId, `Compra: ${data.compra}`);
+  bot.sendMessage(chatId, `Venta: ${data.venta}`);
 });
 
 app.get("/", (req, res) => {
